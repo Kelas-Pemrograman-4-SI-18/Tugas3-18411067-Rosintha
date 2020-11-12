@@ -1,16 +1,14 @@
-package com.e.myapplication.pembeli;
+package com.e.myapplication.admin;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -21,15 +19,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.e.myapplication.R;
 import com.e.myapplication.adapter.AdapterBuku;
-import com.e.myapplication.admin.ActivityDataJam;
-import com.e.myapplication.admin.EditBukuDanHapusActivity;
-import com.e.myapplication.admin.HomeAdminActivity;
 import com.e.myapplication.model.ModelBuku;
 import com.e.myapplication.server.BaseURL;
-import com.e.myapplication.session.PrefSetting;
-import com.e.myapplication.session.SessionManager;
-import com.e.myapplication.users.LoginActivity;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,7 +28,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class HomePembeliActivity extends AppCompatActivity {
+public class ActivityDataJam extends AppCompatActivity {
 
     ProgressDialog pDialog;
 
@@ -47,21 +38,10 @@ public class HomePembeliActivity extends AppCompatActivity {
     ArrayList<ModelBuku> newList = new ArrayList<ModelBuku>();
     private RequestQueue mRequestQueue;
 
-    FloatingActionButton floatingExit;
-
-    SessionManager session;
-    SharedPreferences prefs;
-    PrefSetting prefSetting;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home_pembeli);
-
-        prefSetting = new PrefSetting(this);
-        prefs = prefSetting.getSharePrefrances();
-
-        session = new SessionManager(HomePembeliActivity.this);
+        setContentView(R.layout.activity_data_jam);
 
         getSupportActionBar().setTitle("Data Jam");
         mRequestQueue = Volley.newRequestQueue(this);
@@ -69,21 +49,8 @@ public class HomePembeliActivity extends AppCompatActivity {
         pDialog.setCancelable(false);
 
         list=(ListView) findViewById(R.id.array_list);
-        floatingExit = (FloatingActionButton) findViewById(R.id.exit);
-
-        floatingExit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                session.setLogin(false);
-                session.setSessid(0);
-                Intent i = new Intent(HomePembeliActivity.this, LoginActivity.class);
-                startActivity(i);
-                finish();
-            }
-        });
-
         newList.clear();
-        adapter = new AdapterBuku(HomePembeliActivity.this, newList);
+        adapter = new AdapterBuku(ActivityDataJam.this, newList);
         list.setAdapter(adapter);
         getAllBuku();
     }
@@ -91,7 +58,7 @@ public class HomePembeliActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-        Intent i = new Intent(HomePembeliActivity.this, HomeAdminActivity.class);
+        Intent i = new Intent(ActivityDataJam.this, HomeAdminActivity.class);
         startActivity(i);
         finish();
     }
@@ -125,19 +92,19 @@ public class HomePembeliActivity extends AppCompatActivity {
                                     buku.setGambar(gambar);
                                     buku.set_id(_id);
 
-                                    list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                   list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                         @Override
                                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                             // TODO Auto-generated method stub
-                                            Intent a = new Intent(HomePembeliActivity.this, DetailJam .class);
-                                            a.putExtra("kodejam", newList.get(position).getKodejam());
-                                            a.putExtra("_id", newList.get(position).get_id());
-                                            a.putExtra("merkjam", newList.get(position).getMerkjam());
+                                            Intent a = new Intent(ActivityDataJam.this, EditBukuDanHapusActivity.class);
+                                           a.putExtra("kodejam", newList.get(position).getKodejam());
+                                           a.putExtra("_id", newList.get(position).get_id());
+                                           a.putExtra("merkjam", newList.get(position).getMerkjam());
                                             a.putExtra("hargajam", newList.get(position).getHargajam());
-                                            a.putExtra("gambar", newList.get(position).getGambar());
+                                           a.putExtra("gambar", newList.get(position).getGambar());
                                             startActivity(a);
                                         }
-                                    });
+                                   });
                                     newList.add(buku);
                                 }
                             }
